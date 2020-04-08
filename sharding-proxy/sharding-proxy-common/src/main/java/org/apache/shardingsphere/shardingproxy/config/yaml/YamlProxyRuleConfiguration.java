@@ -37,14 +37,14 @@ import java.util.Map;
 public final class YamlProxyRuleConfiguration implements YamlConfiguration {
     
     private String schemaName;
-    
+    // 别名数据源
     private Map<String, YamlDataSourceParameter> dataSources = new HashMap<>();
-    
+    // 默认的数据源
     private YamlDataSourceParameter dataSource;
-    
+    // 分片规则
     private YamlShardingRuleConfiguration shardingRule;
-    
+    // 主从规则
     private YamlMasterSlaveRuleConfiguration masterSlaveRule;
-    
+    // 加密规则
     private YamlEncryptRuleConfiguration encryptRule;
 }

@@ -47,6 +47,7 @@ public final class ProxyUserYamlSwapper implements YamlSwapper<YamlProxyUserConf
         if (Strings.isNullOrEmpty(yamlConfiguration.getAuthorizedSchemas())) {
             return new ProxyUser(yamlConfiguration.getPassword(), Collections.<String>emptyList());
         }
+        // ',' 分割用户授权的schemas
         return new ProxyUser(yamlConfiguration.getPassword(), Splitter.on(',').trimResults().splitToList(yamlConfiguration.getAuthorizedSchemas()));
     }
 }

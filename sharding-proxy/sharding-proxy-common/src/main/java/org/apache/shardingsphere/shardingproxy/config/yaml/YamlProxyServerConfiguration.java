@@ -34,10 +34,10 @@ import java.util.Properties;
 @Getter
 @Setter
 public final class YamlProxyServerConfiguration implements YamlConfiguration {
-    
+    // schema 授权信息
     private YamlAuthenticationConfiguration authentication;
-    
+    // 注册中心的配置
     private YamlOrchestrationConfiguration orchestration;
-    
+    // properties
     private Properties props = new Properties();
 }

@@ -32,8 +32,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Getter
 public final class ShardingConfiguration {
-    
+    // 服务端配置
     private final YamlProxyServerConfiguration serverConfiguration;
-    
+    // 代理规则  schemaName -> 代理规则
     private final Map<String, YamlProxyRuleConfiguration> ruleConfigurationMap;
 }

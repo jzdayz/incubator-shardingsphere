@@ -38,7 +38,7 @@ import java.util.Map;
 @Getter
 @Setter
 public class YamlShardingRuleConfiguration implements YamlConfiguration {
-    
+    // 逻辑表名
     private Map<String, YamlTableRuleConfiguration> tables = new LinkedHashMap<>();
     
     private Collection<String> bindingTables = new ArrayList<>();

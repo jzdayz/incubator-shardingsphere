@@ -74,16 +74,23 @@ public final class Bootstrap {
      * @throws SQLException SQL exception
      */
     public static void main(final String[] args) throws IOException, SQLException {
+        // 读取 /conf/server.yaml /conf/server-xxx.yaml 配置文件
         ShardingConfiguration shardingConfig = new ShardingConfigurationLoader().load();
+        // log打印配置
         logRuleConfigurationMap(getRuleConfiguration(shardingConfig.getRuleConfigurationMap()).values());
         int port = getPort(args);
+        // 是否有注册中心配置
         if (null == shardingConfig.getServerConfiguration().getOrchestration()) {
             startWithoutRegistryCenter(shardingConfig.getRuleConfigurationMap(), shardingConfig.getServerConfiguration().getAuthentication(), shardingConfig.getServerConfiguration().getProps(), port);
         } else {
             startWithRegistryCenter(shardingConfig.getServerConfiguration(), shardingConfig.getRuleConfigurationMap().keySet(), shardingConfig.getRuleConfigurationMap(), port);
         }
     }
-    
+
+    /**
+     * @param args 参数
+     * @return 没有参数返回3307 ，有参数返回第一个
+     */
     private static int getPort(final String[] args) {
         if (0 == args.length) {
             return DEFAULT_PORT;
@@ -92,13 +99,16 @@ public final class Bootstrap {
         return paredPort == null ? DEFAULT_PORT : paredPort;
     }
     
-    private static void startWithoutRegistryCenter(final Map<String, YamlProxyRuleConfiguration> ruleConfigs,
+    private static void startWithoutRegistryCenter(final Map<String, YamlProxyRuleConfiguration> ruleConfigs, // schemaName -> proxyRule
                                                    final YamlAuthenticationConfiguration authentication, final Properties prop, final int port) throws SQLException {
+        // 授权信息
         Authentication authenticationConfiguration = getAuthentication(authentication);
         ConfigurationLogger.log(authenticationConfiguration);
         ConfigurationLogger.log(prop);
+        // 授权信息静态变量绑定
         ShardingProxyContext.getInstance().init(authenticationConfiguration, prop);
-        LogicSchemas.getInstance().init(getDataSourceParameterMap(ruleConfigs), getRuleConfiguration(ruleConfigs));
+        // 逻辑schema静态变量绑定
+        LogicSchemas.getInstance().init(/*schemaName -> (数据源别名,数据源)*/getDataSourceParameterMap(ruleConfigs), getRuleConfiguration(ruleConfigs));
         initOpenTracing();
         ShardingProxy.getInstance().start(port);
     }
@@ -177,7 +187,9 @@ public final class Bootstrap {
     
     private static Map<String, RuleConfiguration> getRuleConfiguration(final Map<String, YamlProxyRuleConfiguration> localRuleConfigs) {
         Map<String, RuleConfiguration> result = new HashMap<>();
+        // 解析每个server-xxx.yaml 文件，生成多个规则配置
         for (Entry<String, YamlProxyRuleConfiguration> entry : localRuleConfigs.entrySet()) {
+            // 这里可以看出，如果同时配置 shardingRule masterSlaveRule encryptRule ，会按照shardingRule masterSlaveRule encryptRule优先级，生效一个
             if (null != entry.getValue().getShardingRule()) {
                 result.put(entry.getKey(), new ShardingRuleConfigurationYamlSwapper().swap(entry.getValue().getShardingRule()));
             } else if (null != entry.getValue().getMasterSlaveRule()) {

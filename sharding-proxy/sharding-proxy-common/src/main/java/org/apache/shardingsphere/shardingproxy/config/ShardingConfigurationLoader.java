@@ -56,21 +56,28 @@ public final class ShardingConfigurationLoader {
      */
     public ShardingConfiguration load() throws IOException {
         Collection<String> schemaNames = new HashSet<>();
+        // classpath下的 /conf/server.yaml
         YamlProxyServerConfiguration serverConfig = loadServerConfiguration(new File(ShardingConfigurationLoader.class.getResource(CONFIG_PATH + SERVER_CONFIG_FILE).getFile()));
+
         File configPath = new File(ShardingConfigurationLoader.class.getResource(CONFIG_PATH).getFile());
         Collection<YamlProxyRuleConfiguration> ruleConfigurations = new LinkedList<>();
+        // 获取 /conf/server-xxx.yaml
         for (File each : findRuleConfigurationFiles(configPath)) {
+            // 每个server-xxx.yaml 生成一个代理规则
             Optional<YamlProxyRuleConfiguration> ruleConfig = loadRuleConfiguration(each, serverConfig);
             if (ruleConfig.isPresent()) {
+                // 必须有schemaName
                 Preconditions.checkState(schemaNames.add(ruleConfig.get().getSchemaName()), "Schema name `%s` must unique at all rule configurations.", ruleConfig.get().getSchemaName());
                 ruleConfigurations.add(ruleConfig.get());
             }
         }
         Preconditions.checkState(!ruleConfigurations.isEmpty() || null != serverConfig.getOrchestration(), "Can not find any sharding rule configuration file in path `%s`.", configPath.getPath());
-        Map<String, YamlProxyRuleConfiguration> ruleConfigurationMap = new HashMap<>(ruleConfigurations.size(), 1);
+        Map<String, YamlProxyRuleConfiguration> ruleConfigurationMap = new HashMap<>(ruleConfigurations.size(), 1/*填充因子，当存储数据达到指定最大值才会扩容*/);
+        // 每个schema对应代理规则
         for (YamlProxyRuleConfiguration each : ruleConfigurations) {
             ruleConfigurationMap.put(each.getSchemaName(), each);
         }
+        
         return new ShardingConfiguration(serverConfig, ruleConfigurationMap);
     }
     
@@ -95,6 +102,7 @@ public final class ShardingConfigurationLoader {
     }
     
     private File[] findRuleConfigurationFiles(final File path) {
+        // 正则过滤 /conf/server-XXX.yaml
         return path.listFiles(new FileFilter() {
             
             @Override

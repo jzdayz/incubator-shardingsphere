@@ -33,7 +33,7 @@ authentication:
   users:
     root:
       password: root
-      authorizedSchemas: db
+      authorizedSchemas: db,db1
 props:
   max.connections.size.per.query: 1
   acceptor.size: 16  # The default value is available processors count * 2.

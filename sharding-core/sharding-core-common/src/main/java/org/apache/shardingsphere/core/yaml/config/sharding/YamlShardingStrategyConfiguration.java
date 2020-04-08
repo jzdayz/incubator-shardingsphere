@@ -28,7 +28,7 @@ import org.apache.shardingsphere.core.yaml.config.sharding.strategy.YamlStandard
 
 /**
  * Sharding strategy configuration for YAML.
- *
+ * 分片的策略
  * @author caohao
  * @author panjuan
  */
@@ -41,8 +41,8 @@ public class YamlShardingStrategyConfiguration implements YamlConfiguration {
     private YamlComplexShardingStrategyConfiguration complex;
     
     private YamlHintShardingStrategyConfiguration hint;
-    
+    //
     private YamlInlineShardingStrategyConfiguration inline;
-    
+    // 无
     private YamlNoneShardingStrategyConfiguration none;
 }

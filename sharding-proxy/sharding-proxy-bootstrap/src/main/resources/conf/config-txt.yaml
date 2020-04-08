@@ -1,0 +1,21 @@
+schemaName: db1
+
+dataSources:
+  ds_0:
+    url: jdbc:mysql://jzdayz.club:3307/db?serverTimezone=UTC&useSSL=false
+    username: root
+    password: 123123123
+    connectionTimeoutMilliseconds: 30000
+    idleTimeoutMilliseconds: 60000
+    maxLifetimeMilliseconds: 1800000
+    maxPoolSize: 10
+shardingRule:
+  tables:
+    txt:
+      actualDataNodes: ds_0.txt
+  bindingTables:
+    - txt
+  defaultDatabaseStrategy:
+    none:
+  defaultTableStrategy:
+    none:

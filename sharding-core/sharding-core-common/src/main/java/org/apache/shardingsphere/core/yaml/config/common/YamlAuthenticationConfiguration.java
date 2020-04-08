@@ -32,6 +32,6 @@ import java.util.Map;
 @Getter
 @Setter
 public final class YamlAuthenticationConfiguration implements YamlConfiguration {
-    
+    // userName -> 代理用户
     private Map<String, YamlProxyUserConfiguration> users = new LinkedHashMap<>();
 }

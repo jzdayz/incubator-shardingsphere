@@ -49,7 +49,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class LogicSchemas {
     
     private static final LogicSchemas INSTANCE = new LogicSchemas();
-    
+    // schema ->
     private final Map<String, LogicSchema> logicSchemas = new ConcurrentHashMap<>();
     
     private DatabaseType databaseType;
@@ -70,8 +70,8 @@ public final class LogicSchemas {
     /**
      * Initialize proxy context.
      *
-     * @param schemaDataSources data source map
-     * @param schemaRules schema rule map
+     * @param schemaDataSources data source map  (schemaName,(dataSourceName,dataSourceConfig))
+     * @param schemaRules schema rule map  (schemaName,规则配置)
      * @throws SQLException SQL exception
      */
     public void init(final Map<String, Map<String, YamlDataSourceParameter>> schemaDataSources, final Map<String, RuleConfiguration> schemaRules) throws SQLException {
@@ -89,6 +89,7 @@ public final class LogicSchemas {
      */
     public void init(final Collection<String> localSchemaNames, final Map<String, Map<String, YamlDataSourceParameter>> schemaDataSources,
                      final Map<String, RuleConfiguration> schemaRules, final boolean isUsingRegistry) throws SQLException {
+        // 选择第一个dataSource用其url判断是什么数据库
         databaseType = DatabaseTypes.getActualDatabaseType(
                 JDBCDriverURLRecognizerEngine.getJDBCDriverURLRecognizer(schemaDataSources.values().iterator().next().values().iterator().next().getUrl()).getDatabaseType());
         initSchemas(localSchemaNames, schemaDataSources, schemaRules, isUsingRegistry);
